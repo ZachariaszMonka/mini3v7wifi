@@ -11,6 +11,6 @@
 
 int main(void)
 {
-
+	SystemClock_Config_high_speed();
 	for(;;);
 }

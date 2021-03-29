@@ -64,4 +64,8 @@
 #define OUT_1_Port GPIOB
 
 
+void SystemClock_Config_high_speed(void);
+void Error_Handler(void);
+
+
 #endif /* LS_H_ */
