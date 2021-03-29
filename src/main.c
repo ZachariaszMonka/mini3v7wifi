@@ -7,10 +7,17 @@
 */
 
 #include "ls.h"
-			
+#include "stm32l0xx.h"
 
 int main(void)
 {
-	SystemClock_Config_high_speed();
-	for(;;);
+	ls_init();
+
+	while(1)
+	{
+		ls_led_on_all();
+		HAL_Delay(2);
+		ls_led_off_all();
+		HAL_Delay(500);
+	}
 }

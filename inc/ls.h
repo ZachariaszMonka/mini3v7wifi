@@ -10,7 +10,7 @@
 
 
 #define wifi_RES_Pin GPIO_PIN_0
-#define wifi_RESPort GPIOA
+#define wifi_RES_Port GPIOA
 #define wifi_EN_Pin GPIO_PIN_1
 #define wifi_EN_Port GPIOA
 #define wifi_Tx_Pin GPIO_PIN_2
@@ -24,7 +24,7 @@
 #define uart_Rx_Port GPIOB
 
 #define SW1_Pin GPIO_PIN_15
-#define SW1_GPIO_Port GPIOA
+#define SW1_Port GPIOA
 #define SW1_EXTI_IRQn EXTI4_15_IRQn
 #define SW2_Pin GPIO_PIN_4
 #define SW2_Port GPIOA
@@ -36,7 +36,6 @@
 #define IO_Pin GPIO_PIN_5
 #define IO_Port GPIOB
 #define IO_EXTI_IRQn EXTI4_15_IRQn
-
 
 #define LED_0_Pin GPIO_PIN_6
 #define LED_0_Port GPIOA
@@ -66,6 +65,24 @@
 
 void SystemClock_Config_high_speed(void);
 void Error_Handler(void);
+
+void ls_init(void);
+
+enum LED_State {LED_OFF = 0, LED_ON = 1, LED_BLINK = 2};
+
+void ls_led_on_all(void);
+void ls_led_off_all(void);
+void ls_led_on(short number);
+void ls_led_off(short number);
+//void ls_led_blink(short number);
+
+
+//void ls_out1_PWM(short wide);
+//void ls_out2_PWM(short wide);
+//void ls_out1_on(void);
+//void ls_out2_on(void);
+//void ls_out1_off(void);
+//void ls_out2_off(void);
 
 
 #endif /* LS_H_ */

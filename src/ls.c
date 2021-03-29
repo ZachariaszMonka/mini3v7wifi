@@ -57,3 +57,164 @@ void Error_Handler(void)
 {
 	for(;;);
 }
+
+void ls_init(void)
+{
+	HAL_Init();
+	SystemClock_Config_high_speed();
+	lls_init_port();
+}
+
+
+GPIO_InitTypeDef ls_GPIO_InitStruct = {0};
+enum LED_State lls_LED[8] = {0,0,0,0,0,0,0,0}; //0=off, 1=on, 2=blink
+
+void lls_init_port(void)
+{
+	//todo other file
+
+
+	/* GPIO Ports Clock Enable */
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+	__HAL_RCC_GPIOB_CLK_ENABLE();
+
+
+	/* Configure LEDs */
+	HAL_GPIO_WritePin(LED_0_Port, LED_0_Pin,GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LED_1_Port, LED_1_Pin,GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LED_2_Port, LED_2_Pin,GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LED_3_Port, LED_3_Pin,GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LED_4_Port, LED_4_Pin,GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LED_5_Port, LED_5_Pin,GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LED_6_Port, LED_6_Pin,GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LED_7_Port, LED_7_Pin,GPIO_PIN_RESET);
+
+	ls_GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	ls_GPIO_InitStruct.Pull = GPIO_NOPULL;
+	ls_GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+
+	ls_GPIO_InitStruct.Pin =  LED_0_Pin;
+	HAL_GPIO_Init(LED_0_Port, &ls_GPIO_InitStruct);
+	ls_GPIO_InitStruct.Pin =  LED_1_Pin;
+	HAL_GPIO_Init(LED_1_Port, &ls_GPIO_InitStruct);
+	ls_GPIO_InitStruct.Pin =  LED_2_Pin;
+	HAL_GPIO_Init(LED_2_Port, &ls_GPIO_InitStruct);
+	ls_GPIO_InitStruct.Pin =  LED_3_Pin;
+	HAL_GPIO_Init(LED_3_Port, &ls_GPIO_InitStruct);
+	ls_GPIO_InitStruct.Pin =  LED_4_Pin;
+	HAL_GPIO_Init(LED_4_Port, &ls_GPIO_InitStruct);
+	ls_GPIO_InitStruct.Pin =  LED_5_Pin;
+	HAL_GPIO_Init(LED_5_Port, &ls_GPIO_InitStruct);
+	ls_GPIO_InitStruct.Pin =  LED_6_Pin;
+	HAL_GPIO_Init(LED_6_Port, &ls_GPIO_InitStruct);
+	ls_GPIO_InitStruct.Pin =  LED_7_Pin;
+	HAL_GPIO_Init(LED_7_Port, &ls_GPIO_InitStruct);
+
+
+	/* Configure OUT */
+	HAL_GPIO_WritePin(OUT_1_Port, OUT_1_Pin,GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(OUT_2_Port, OUT_2_Pin,GPIO_PIN_RESET);
+
+	ls_GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	ls_GPIO_InitStruct.Pull = GPIO_NOPULL;
+	ls_GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+
+	ls_GPIO_InitStruct.Pin =  OUT_1_Pin;
+	HAL_GPIO_Init(OUT_1_Port, &ls_GPIO_InitStruct);
+	ls_GPIO_InitStruct.Pin =  OUT_2_Pin;
+	HAL_GPIO_Init(OUT_2_Port, &ls_GPIO_InitStruct);
+
+	HAL_GPIO_WritePin(OUT_1_Port, OUT_1_Pin,GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(OUT_2_Port, OUT_2_Pin,GPIO_PIN_RESET);
+
+
+	/* Configure SW */
+	ls_GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+	ls_GPIO_InitStruct.Pull = GPIO_PULLUP;
+
+	ls_GPIO_InitStruct.Pin = SW1_Pin;
+	HAL_GPIO_Init(SW1_Port, &ls_GPIO_InitStruct);
+	ls_GPIO_InitStruct.Pin = SW2_Pin;
+	HAL_GPIO_Init(SW2_Port, &ls_GPIO_InitStruct);
+	ls_GPIO_InitStruct.Pin = SW3_Pin;
+	HAL_GPIO_Init(SW3_Port, &ls_GPIO_InitStruct);
+
+
+	/* UART PIN */
+	//todo
+
+}
+//void lls_init_tim(void) //todo
+//void lls_init_interrup(void) //todo
+
+void ls_led_off_all(void)
+{
+	lls_LED[0] = LED_OFF;
+	lls_LED[1] = LED_OFF;
+	lls_LED[2] = LED_OFF;
+	lls_LED[3] = LED_OFF;
+	lls_LED[4] = LED_OFF;
+	lls_LED[5] = LED_OFF;
+	lls_LED[6] = LED_OFF;
+	lls_LED[7] = LED_OFF;
+
+	HAL_GPIO_WritePin(LED_0_Port, LED_0_Pin,GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LED_1_Port, LED_1_Pin,GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LED_2_Port, LED_2_Pin,GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LED_3_Port, LED_3_Pin,GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LED_4_Port, LED_4_Pin,GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LED_5_Port, LED_5_Pin,GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LED_6_Port, LED_6_Pin,GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LED_7_Port, LED_7_Pin,GPIO_PIN_RESET);
+}
+
+void ls_led_on_all(void)
+{
+	lls_LED[0] = LED_ON;
+	lls_LED[1] = LED_ON;
+	lls_LED[2] = LED_ON;
+	lls_LED[3] = LED_ON;
+	lls_LED[4] = LED_ON;
+	lls_LED[5] = LED_ON;
+	lls_LED[6] = LED_ON;
+	lls_LED[7] = LED_ON;
+
+	HAL_GPIO_WritePin(LED_0_Port, LED_0_Pin,GPIO_PIN_SET);
+	HAL_GPIO_WritePin(LED_1_Port, LED_1_Pin,GPIO_PIN_SET);
+	HAL_GPIO_WritePin(LED_2_Port, LED_2_Pin,GPIO_PIN_SET);
+	HAL_GPIO_WritePin(LED_3_Port, LED_3_Pin,GPIO_PIN_SET);
+	HAL_GPIO_WritePin(LED_4_Port, LED_4_Pin,GPIO_PIN_SET);
+	HAL_GPIO_WritePin(LED_5_Port, LED_5_Pin,GPIO_PIN_SET);
+	HAL_GPIO_WritePin(LED_6_Port, LED_6_Pin,GPIO_PIN_SET);
+	HAL_GPIO_WritePin(LED_7_Port, LED_7_Pin,GPIO_PIN_SET);
+}
+
+void ls_led_on(short number)
+{
+	lls_LED[number] = LED_ON;
+
+	if(lls_LED[0] == LED_ON)HAL_GPIO_WritePin(LED_7_Port,LED_7_Pin,GPIO_PIN_SET);
+	if(lls_LED[1] == LED_ON)HAL_GPIO_WritePin(LED_6_Port,LED_6_Pin,GPIO_PIN_SET);
+	if(lls_LED[2] == LED_ON)HAL_GPIO_WritePin(LED_5_Port,LED_5_Pin,GPIO_PIN_SET);
+	if(lls_LED[3] == LED_ON)HAL_GPIO_WritePin(LED_4_Port,LED_4_Pin,GPIO_PIN_SET);
+	if(lls_LED[4] == LED_ON)HAL_GPIO_WritePin(LED_3_Port,LED_3_Pin,GPIO_PIN_SET);
+	if(lls_LED[5] == LED_ON)HAL_GPIO_WritePin(LED_2_Port,LED_2_Pin,GPIO_PIN_SET);
+	if(lls_LED[6] == LED_ON)HAL_GPIO_WritePin(LED_1_Port,LED_1_Pin,GPIO_PIN_SET);
+	if(lls_LED[7] == LED_ON)HAL_GPIO_WritePin(LED_0_Port,LED_0_Pin,GPIO_PIN_SET);
+}
+
+void ls_led_off(short number)
+{
+	lls_LED[number] = LED_OFF;
+
+	if(lls_LED[0] == LED_OFF)HAL_GPIO_WritePin(LED_7_Port,LED_7_Pin,GPIO_PIN_RESET);
+	if(lls_LED[1] == LED_OFF)HAL_GPIO_WritePin(LED_6_Port,LED_6_Pin,GPIO_PIN_RESET);
+	if(lls_LED[2] == LED_OFF)HAL_GPIO_WritePin(LED_5_Port,LED_5_Pin,GPIO_PIN_RESET);
+	if(lls_LED[3] == LED_OFF)HAL_GPIO_WritePin(LED_4_Port,LED_4_Pin,GPIO_PIN_RESET);
+	if(lls_LED[4] == LED_OFF)HAL_GPIO_WritePin(LED_3_Port,LED_3_Pin,GPIO_PIN_RESET);
+	if(lls_LED[5] == LED_OFF)HAL_GPIO_WritePin(LED_2_Port,LED_2_Pin,GPIO_PIN_RESET);
+	if(lls_LED[6] == LED_OFF)HAL_GPIO_WritePin(LED_1_Port,LED_1_Pin,GPIO_PIN_RESET);
+	if(lls_LED[7] == LED_OFF)HAL_GPIO_WritePin(LED_0_Port,LED_0_Pin,GPIO_PIN_RESET);
+}
+
+
