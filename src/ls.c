@@ -8,9 +8,25 @@
 #include "stm32l0xx.h"
 #include "ls.h"
 
+GPIO_InitTypeDef lls_GPIO_InitStruct;
+TIM_HandleTypeDef lls_tim21;
+
+long lls_buzz_cycle;
+long lls_buzz_period;
 
 void SystemClock_Config_high_speed(void)
 {
+	#define SYSCAL 32000000
+	#define HCLK 32000000
+	#define FCLK 32000000
+	#define APB1_per 32000000
+	#define APB1_tim 32000000
+	#define APB2_per 32000000
+	#define APB2_tim 32000000
+	#define CK_PWR 32000000
+	#define USART1CLK 32000000
+	#define USART2CLK 32000000
+
 	RCC_OscInitTypeDef RCC_OscInitStruct = {0};
 	RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 	RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
@@ -58,15 +74,6 @@ void Error_Handler(void)
 	for(;;);
 }
 
-void ls_init(void)
-{
-	HAL_Init();
-	SystemClock_Config_high_speed();
-	lls_init_port();
-}
-
-
-GPIO_InitTypeDef ls_GPIO_InitStruct = {0};
 enum LED_State lls_LED[8] = {0,0,0,0,0,0,0,0}; //0=off, 1=on, 2=blink
 
 void lls_init_port(void)
@@ -89,63 +96,117 @@ void lls_init_port(void)
 	HAL_GPIO_WritePin(LED_6_Port, LED_6_Pin,GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(LED_7_Port, LED_7_Pin,GPIO_PIN_RESET);
 
-	ls_GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	ls_GPIO_InitStruct.Pull = GPIO_NOPULL;
-	ls_GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	lls_GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	lls_GPIO_InitStruct.Pull = GPIO_NOPULL;
+	lls_GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 
-	ls_GPIO_InitStruct.Pin =  LED_0_Pin;
-	HAL_GPIO_Init(LED_0_Port, &ls_GPIO_InitStruct);
-	ls_GPIO_InitStruct.Pin =  LED_1_Pin;
-	HAL_GPIO_Init(LED_1_Port, &ls_GPIO_InitStruct);
-	ls_GPIO_InitStruct.Pin =  LED_2_Pin;
-	HAL_GPIO_Init(LED_2_Port, &ls_GPIO_InitStruct);
-	ls_GPIO_InitStruct.Pin =  LED_3_Pin;
-	HAL_GPIO_Init(LED_3_Port, &ls_GPIO_InitStruct);
-	ls_GPIO_InitStruct.Pin =  LED_4_Pin;
-	HAL_GPIO_Init(LED_4_Port, &ls_GPIO_InitStruct);
-	ls_GPIO_InitStruct.Pin =  LED_5_Pin;
-	HAL_GPIO_Init(LED_5_Port, &ls_GPIO_InitStruct);
-	ls_GPIO_InitStruct.Pin =  LED_6_Pin;
-	HAL_GPIO_Init(LED_6_Port, &ls_GPIO_InitStruct);
-	ls_GPIO_InitStruct.Pin =  LED_7_Pin;
-	HAL_GPIO_Init(LED_7_Port, &ls_GPIO_InitStruct);
+	lls_GPIO_InitStruct.Pin =  LED_0_Pin;
+	HAL_GPIO_Init(LED_0_Port, &lls_GPIO_InitStruct);
+	lls_GPIO_InitStruct.Pin =  LED_1_Pin;
+	HAL_GPIO_Init(LED_1_Port, &lls_GPIO_InitStruct);
+	lls_GPIO_InitStruct.Pin =  LED_2_Pin;
+	HAL_GPIO_Init(LED_2_Port, &lls_GPIO_InitStruct);
+	lls_GPIO_InitStruct.Pin =  LED_3_Pin;
+	HAL_GPIO_Init(LED_3_Port, &lls_GPIO_InitStruct);
+	lls_GPIO_InitStruct.Pin =  LED_4_Pin;
+	HAL_GPIO_Init(LED_4_Port, &lls_GPIO_InitStruct);
+	lls_GPIO_InitStruct.Pin =  LED_5_Pin;
+	HAL_GPIO_Init(LED_5_Port, &lls_GPIO_InitStruct);
+	lls_GPIO_InitStruct.Pin =  LED_6_Pin;
+	HAL_GPIO_Init(LED_6_Port, &lls_GPIO_InitStruct);
+	lls_GPIO_InitStruct.Pin =  LED_7_Pin;
+	HAL_GPIO_Init(LED_7_Port, &lls_GPIO_InitStruct);
 
 
 	/* Configure OUT */
 	HAL_GPIO_WritePin(OUT_1_Port, OUT_1_Pin,GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(OUT_2_Port, OUT_2_Pin,GPIO_PIN_RESET);
 
-	ls_GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	ls_GPIO_InitStruct.Pull = GPIO_NOPULL;
-	ls_GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	lls_GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	lls_GPIO_InitStruct.Pull = GPIO_NOPULL;
+	lls_GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 
-	ls_GPIO_InitStruct.Pin =  OUT_1_Pin;
-	HAL_GPIO_Init(OUT_1_Port, &ls_GPIO_InitStruct);
-	ls_GPIO_InitStruct.Pin =  OUT_2_Pin;
-	HAL_GPIO_Init(OUT_2_Port, &ls_GPIO_InitStruct);
+	lls_GPIO_InitStruct.Pin =  OUT_1_Pin;
+	HAL_GPIO_Init(OUT_1_Port, &lls_GPIO_InitStruct);
+	lls_GPIO_InitStruct.Pin =  OUT_2_Pin;
+	HAL_GPIO_Init(OUT_2_Port, &lls_GPIO_InitStruct);
 
 	HAL_GPIO_WritePin(OUT_1_Port, OUT_1_Pin,GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(OUT_2_Port, OUT_2_Pin,GPIO_PIN_RESET);
 
 
 	/* Configure SW */
-	ls_GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
-	ls_GPIO_InitStruct.Pull = GPIO_PULLUP;
+	lls_GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+	lls_GPIO_InitStruct.Pull = GPIO_PULLUP;
 
-	ls_GPIO_InitStruct.Pin = SW1_Pin;
-	HAL_GPIO_Init(SW1_Port, &ls_GPIO_InitStruct);
-	ls_GPIO_InitStruct.Pin = SW2_Pin;
-	HAL_GPIO_Init(SW2_Port, &ls_GPIO_InitStruct);
-	ls_GPIO_InitStruct.Pin = SW3_Pin;
-	HAL_GPIO_Init(SW3_Port, &ls_GPIO_InitStruct);
+	lls_GPIO_InitStruct.Pin = SW1_Pin;
+	HAL_GPIO_Init(SW1_Port, &lls_GPIO_InitStruct);
+	lls_GPIO_InitStruct.Pin = SW2_Pin;
+	HAL_GPIO_Init(SW2_Port, &lls_GPIO_InitStruct);
+	lls_GPIO_InitStruct.Pin = SW3_Pin;
+	HAL_GPIO_Init(SW3_Port, &lls_GPIO_InitStruct);
+
+	/* Configure buzz */
+
+	HAL_GPIO_WritePin(buzz_Port, buzz_Pin,GPIO_PIN_RESET);
+
+	lls_GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	lls_GPIO_InitStruct.Pull = GPIO_NOPULL;
+	lls_GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+
+	lls_GPIO_InitStruct.Pin =  buzz_Pin;
+	HAL_GPIO_Init(buzz_Port, &lls_GPIO_InitStruct);
 
 
-	/* UART PIN */
+	/* Configure UART */
 	//todo
 
 }
-//void lls_init_tim(void) //todo
-//void lls_init_interrup(void) //todo
+
+void lls_init_tim(void)
+{
+	/* Timer 21 interrupt triggered every  */
+	HAL_NVIC_SetPriority(TIM21_IRQn, 2, 0);
+	__HAL_RCC_TIM21_CLK_ENABLE();
+
+	TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+	TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+	lls_tim21.Instance = TIM21;
+	lls_tim21.Init.Prescaler = 32; //1MHz
+	lls_tim21.Init.CounterMode = TIM_COUNTERMODE_DOWN;
+	lls_tim21.Init.Period = 50; //20kHz
+	lls_tim21.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+	lls_tim21.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+	if (HAL_TIM_Base_Init(&lls_tim21) != HAL_OK)
+	{
+		Error_Handler();
+	}
+
+	 sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+	if (HAL_TIM_ConfigClockSource(&lls_tim21, &sClockSourceConfig) != HAL_OK)
+	{
+		Error_Handler();
+	}
+	sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+	sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+	if (HAL_TIMEx_MasterConfigSynchronization(&lls_tim21, &sMasterConfig) != HAL_OK)
+	{
+		Error_Handler();
+	}
+
+	HAL_TIM_Base_Start_IT(&lls_tim21);
+}
+
+//void lls_init_exti(void) //todo
+
+void ls_init(void)
+{
+	HAL_Init();
+	SystemClock_Config_high_speed();
+	lls_init_port();
+	lls_init_tim();
+}
 
 void ls_led_off_all(void)
 {
@@ -217,4 +278,12 @@ void ls_led_off(short number)
 	if(lls_LED[7] == LED_OFF)HAL_GPIO_WritePin(LED_0_Port,LED_0_Pin,GPIO_PIN_RESET);
 }
 
+void ls_buzz(int frequency, short time)
+//working in interrupt, does NOT wait until the end of the sound
+{
+	lls_buzz_period = 10000/frequency;
+	lls_buzz_cycle = 20*time;
+	HAL_NVIC_EnableIRQ(TIM21_IRQn);
+	//TODO off buzzer DC
+}
 

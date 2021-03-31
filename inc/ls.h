@@ -7,7 +7,13 @@
 #ifndef LS_H_
 #define LS_H_
 
+#include "stm32l0xx.h"
 
+extern GPIO_InitTypeDef lls_GPIO_InitStruct;
+extern TIM_HandleTypeDef lls_tim21;
+
+extern long lls_buzz_cycle;
+extern long lls_buzz_period;
 
 #define wifi_RES_Pin GPIO_PIN_0
 #define wifi_RES_Port GPIOA
@@ -75,6 +81,8 @@ void ls_led_off_all(void);
 void ls_led_on(short number);
 void ls_led_off(short number);
 //void ls_led_blink(short number);
+
+void ls_buzz(int frequency, short time);
 
 
 //void ls_out1_PWM(short wide);

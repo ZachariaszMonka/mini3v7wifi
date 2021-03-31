@@ -15,6 +15,7 @@
 #include <cmsis_os.h>
 #endif
 #include "stm32l0xx_it.h"
+#include "ls.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -40,3 +41,10 @@ void SysTick_Handler(void)
 	osSystickHandler();
 #endif
 }
+
+void TIM21_IRQHandler(void)
+{
+	HAL_TIM_IRQHandler(&lls_tim21);
+}
+
+
