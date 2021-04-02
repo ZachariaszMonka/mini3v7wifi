@@ -47,4 +47,9 @@ void TIM21_IRQHandler(void)
 	HAL_TIM_IRQHandler(&lls_tim21);
 }
 
-
+void EXTI4_15_IRQHandler(void)
+{
+	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_4);
+	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_5);
+	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_15);
+}

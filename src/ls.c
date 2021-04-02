@@ -198,7 +198,15 @@ void lls_init_tim(void)
 	HAL_TIM_Base_Start_IT(&lls_tim21);
 }
 
-//void lls_init_exti(void) //todo
+void lls_init_exti(void)
+{
+	/* EXTI interrupt */
+	HAL_NVIC_SetPriority(EXTI4_15_IRQn, 3, 0);
+	HAL_NVIC_EnableIRQ(EXTI4_15_IRQn);
+	//other configuration in lls_init_port:
+	//	GPIO_MODE_IT_FALLING
+
+}
 
 void ls_init(void)
 {
@@ -206,6 +214,7 @@ void ls_init(void)
 	SystemClock_Config_high_speed();
 	lls_init_port();
 	lls_init_tim();
+	lls_init_exti();
 }
 
 void ls_led_off_all(void)
