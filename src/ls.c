@@ -10,6 +10,7 @@
 
 GPIO_InitTypeDef lls_GPIO_InitStruct;
 TIM_HandleTypeDef lls_tim21;
+TIM_HandleTypeDef lls_tim22;
 
 long lls_buzz_cycle;
 long lls_buzz_period;
@@ -165,12 +166,12 @@ void lls_init_port(void)
 
 void lls_init_tim(void)
 {
+	TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+	TIM_MasterConfigTypeDef sMasterConfig = {0};
+
 	/* Timer 21 interrupt triggered every  */
 	HAL_NVIC_SetPriority(TIM21_IRQn, 2, 0);
 	__HAL_RCC_TIM21_CLK_ENABLE();
-
-	TIM_ClockConfigTypeDef sClockSourceConfig = {0};
-	TIM_MasterConfigTypeDef sMasterConfig = {0};
 
 	lls_tim21.Instance = TIM21;
 	lls_tim21.Init.Prescaler = 32; //1MHz
@@ -196,6 +197,39 @@ void lls_init_tim(void)
 	}
 
 	HAL_TIM_Base_Start_IT(&lls_tim21);
+
+
+	/* Timer 22 interrupt triggered every  */
+	HAL_NVIC_SetPriority(TIM22_IRQn, 2, 0);
+	__HAL_RCC_TIM22_CLK_ENABLE();
+
+	lls_tim22.Instance = TIM22;
+	lls_tim22.Init.Prescaler = 320; //100kHz
+	lls_tim22.Init.CounterMode = TIM_COUNTERMODE_DOWN;
+	lls_tim22.Init.Period = 1000; //100Hz
+	lls_tim22.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+	lls_tim22.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+	if (HAL_TIM_Base_Init(&lls_tim22) != HAL_OK)
+	{
+		Error_Handler();
+	}
+
+	 sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+	if (HAL_TIM_ConfigClockSource(&lls_tim22, &sClockSourceConfig) != HAL_OK)
+	{
+		Error_Handler();
+	}
+	sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+	sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+	if (HAL_TIMEx_MasterConfigSynchronization(&lls_tim22, &sMasterConfig) != HAL_OK)
+	{
+		Error_Handler();
+	}
+
+	HAL_TIM_Base_Start_IT(&lls_tim22);
+	HAL_NVIC_EnableIRQ(TIM22_IRQn);
+
+
 }
 
 void lls_init_exti(void)

@@ -11,6 +11,7 @@
 
 extern GPIO_InitTypeDef lls_GPIO_InitStruct;
 extern TIM_HandleTypeDef lls_tim21;
+extern TIM_HandleTypeDef lls_tim22;
 
 extern long lls_buzz_cycle;
 extern long lls_buzz_period;
