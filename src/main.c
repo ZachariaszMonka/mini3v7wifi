@@ -27,6 +27,9 @@ int main(void)
 
 /* interup */
 //todo interrup_file
+volatile uint8_t lls_debouncing_ch1 = 0;
+volatile uint8_t lls_debouncing_ch2 = 0;
+volatile uint8_t lls_debouncing_ch3 = 0;
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *lls_tim)
 {
@@ -34,6 +37,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *lls_tim)
 	if(lls_tim->Instance == TIM22)//check source
 	//100Hz
 	{
+		//LED blink
 		extern enum LED_State lls_LED[8];
 		static volatile uint8_t lls_blink_counter = 0;
 		lls_blink_counter ++;
@@ -85,6 +89,23 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *lls_tim)
 			if(lls_LED[7] == LED_BLINK_5Hz)HAL_GPIO_WritePin(LED_0_Port,LED_0_Pin,GPIO_PIN_RESET);
 		}
 
+		//debouncing
+		if(lls_debouncing_ch1)
+		{
+			if(HAL_GPIO_ReadPin(SW1_Port,SW1_Pin)!=0)
+				lls_debouncing_ch1--;
+		}
+		if(lls_debouncing_ch2)
+		{
+			if(HAL_GPIO_ReadPin(SW2_Port,SW2_Pin)!=0)
+				lls_debouncing_ch2--;
+		}
+		if(lls_debouncing_ch3)
+		{
+			if(HAL_GPIO_ReadPin(SW3_Port,SW3_Pin)!=0)
+				lls_debouncing_ch3--;
+		}
+
 	}
 	if(lls_tim->Instance == TIM21)//check source
 	//20kHz do not run every time
@@ -110,14 +131,29 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)//falling
 //todo ringbuffer, debouncing
 	if(HAL_GPIO_ReadPin(SW3_Port,SW3_Pin)==0) //interrup SW3
 	{
-		ls_led_off_all();
+		if(lls_debouncing_ch3 == 0)
+		{
+			lls_debouncing_ch3 = 4;// debouncing 30/40ms
+
+			ls_led_off_all();
+		}
 	}
 	if(HAL_GPIO_ReadPin(SW2_Port,SW2_Pin)==0) //interrup SW2
 	{
-		ls_led_on_all();
+		if(lls_debouncing_ch2 == 0)
+		{
+			lls_debouncing_ch2 = 4;// debouncing 30/40ms
+
+			ls_led_on_all();
+		}
 	}
 	if(HAL_GPIO_ReadPin(SW1_Port,SW1_Pin)==0) //interrup SW1
 	{
-		ls_buzz(3000, 100);
+		if(lls_debouncing_ch1 == 0)
+		{
+			lls_debouncing_ch1 = 4;// debouncing 30/40ms
+
+			ls_buzz(3000, 100);
+		}
 	}
 }
