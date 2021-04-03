@@ -321,6 +321,16 @@ void ls_led_off(short number)
 	if(lls_LED[7] == LED_OFF)HAL_GPIO_WritePin(LED_0_Port,LED_0_Pin,GPIO_PIN_RESET);
 }
 
+void ls_led_blink_1Hz(short number)
+{
+	lls_LED[number] = LED_BLINK_1Hz;
+}
+
+void ls_led_blink_5Hz(short number)
+{
+	lls_LED[number] = LED_BLINK_5Hz;
+}
+
 void ls_buzz(int frequency, short time)
 //working in interrupt, does NOT wait until the end of the sound
 {

@@ -16,6 +16,9 @@ int main(void)
 	ls_buzz(1000, 100);
 	ls_led_off_all();
 
+	ls_led_blink_1Hz(0);
+	ls_led_blink_1Hz(7);
+
 	while(1)
 	{
 
@@ -31,6 +34,56 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *lls_tim)
 	if(lls_tim->Instance == TIM22)//check source
 	//100Hz
 	{
+		extern enum LED_State lls_LED[8];
+		static volatile uint8_t lls_blink_counter = 0;
+		lls_blink_counter ++;
+		if(lls_blink_counter >= 100)
+			lls_blink_counter = 0;
+
+		if(lls_blink_counter == 0)
+		{
+			if(lls_LED[0] == LED_BLINK_1Hz)HAL_GPIO_WritePin(LED_7_Port,LED_7_Pin,GPIO_PIN_SET);
+			if(lls_LED[1] == LED_BLINK_1Hz)HAL_GPIO_WritePin(LED_6_Port,LED_6_Pin,GPIO_PIN_SET);
+			if(lls_LED[2] == LED_BLINK_1Hz)HAL_GPIO_WritePin(LED_5_Port,LED_5_Pin,GPIO_PIN_SET);
+			if(lls_LED[3] == LED_BLINK_1Hz)HAL_GPIO_WritePin(LED_4_Port,LED_4_Pin,GPIO_PIN_SET);
+			if(lls_LED[4] == LED_BLINK_1Hz)HAL_GPIO_WritePin(LED_3_Port,LED_3_Pin,GPIO_PIN_SET);
+			if(lls_LED[5] == LED_BLINK_1Hz)HAL_GPIO_WritePin(LED_2_Port,LED_2_Pin,GPIO_PIN_SET);
+			if(lls_LED[6] == LED_BLINK_1Hz)HAL_GPIO_WritePin(LED_1_Port,LED_1_Pin,GPIO_PIN_SET);
+			if(lls_LED[7] == LED_BLINK_1Hz)HAL_GPIO_WritePin(LED_0_Port,LED_0_Pin,GPIO_PIN_SET);
+		}
+		if(lls_blink_counter == 50)
+		{
+			if(lls_LED[0] == LED_BLINK_1Hz)HAL_GPIO_WritePin(LED_7_Port,LED_7_Pin,GPIO_PIN_RESET);
+			if(lls_LED[1] == LED_BLINK_1Hz)HAL_GPIO_WritePin(LED_6_Port,LED_6_Pin,GPIO_PIN_RESET);
+			if(lls_LED[2] == LED_BLINK_1Hz)HAL_GPIO_WritePin(LED_5_Port,LED_5_Pin,GPIO_PIN_RESET);
+			if(lls_LED[3] == LED_BLINK_1Hz)HAL_GPIO_WritePin(LED_4_Port,LED_4_Pin,GPIO_PIN_RESET);
+			if(lls_LED[4] == LED_BLINK_1Hz)HAL_GPIO_WritePin(LED_3_Port,LED_3_Pin,GPIO_PIN_RESET);
+			if(lls_LED[5] == LED_BLINK_1Hz)HAL_GPIO_WritePin(LED_2_Port,LED_2_Pin,GPIO_PIN_RESET);
+			if(lls_LED[6] == LED_BLINK_1Hz)HAL_GPIO_WritePin(LED_1_Port,LED_1_Pin,GPIO_PIN_RESET);
+			if(lls_LED[7] == LED_BLINK_1Hz)HAL_GPIO_WritePin(LED_0_Port,LED_0_Pin,GPIO_PIN_RESET);
+		}
+		if(lls_blink_counter % 20 == 0)
+		{
+			if(lls_LED[0] == LED_BLINK_5Hz)HAL_GPIO_WritePin(LED_7_Port,LED_7_Pin,GPIO_PIN_SET);
+			if(lls_LED[1] == LED_BLINK_5Hz)HAL_GPIO_WritePin(LED_6_Port,LED_6_Pin,GPIO_PIN_SET);
+			if(lls_LED[2] == LED_BLINK_5Hz)HAL_GPIO_WritePin(LED_5_Port,LED_5_Pin,GPIO_PIN_SET);
+			if(lls_LED[3] == LED_BLINK_5Hz)HAL_GPIO_WritePin(LED_4_Port,LED_4_Pin,GPIO_PIN_SET);
+			if(lls_LED[4] == LED_BLINK_5Hz)HAL_GPIO_WritePin(LED_3_Port,LED_3_Pin,GPIO_PIN_SET);
+			if(lls_LED[5] == LED_BLINK_5Hz)HAL_GPIO_WritePin(LED_2_Port,LED_2_Pin,GPIO_PIN_SET);
+			if(lls_LED[6] == LED_BLINK_5Hz)HAL_GPIO_WritePin(LED_1_Port,LED_1_Pin,GPIO_PIN_SET);
+			if(lls_LED[7] == LED_BLINK_5Hz)HAL_GPIO_WritePin(LED_0_Port,LED_0_Pin,GPIO_PIN_SET);
+		}
+		if(lls_blink_counter % 20 == 10)
+		{
+			if(lls_LED[0] == LED_BLINK_5Hz)HAL_GPIO_WritePin(LED_7_Port,LED_7_Pin,GPIO_PIN_RESET);
+			if(lls_LED[1] == LED_BLINK_5Hz)HAL_GPIO_WritePin(LED_6_Port,LED_6_Pin,GPIO_PIN_RESET);
+			if(lls_LED[2] == LED_BLINK_5Hz)HAL_GPIO_WritePin(LED_5_Port,LED_5_Pin,GPIO_PIN_RESET);
+			if(lls_LED[3] == LED_BLINK_5Hz)HAL_GPIO_WritePin(LED_4_Port,LED_4_Pin,GPIO_PIN_RESET);
+			if(lls_LED[4] == LED_BLINK_5Hz)HAL_GPIO_WritePin(LED_3_Port,LED_3_Pin,GPIO_PIN_RESET);
+			if(lls_LED[5] == LED_BLINK_5Hz)HAL_GPIO_WritePin(LED_2_Port,LED_2_Pin,GPIO_PIN_RESET);
+			if(lls_LED[6] == LED_BLINK_5Hz)HAL_GPIO_WritePin(LED_1_Port,LED_1_Pin,GPIO_PIN_RESET);
+			if(lls_LED[7] == LED_BLINK_5Hz)HAL_GPIO_WritePin(LED_0_Port,LED_0_Pin,GPIO_PIN_RESET);
+		}
 
 	}
 	if(lls_tim->Instance == TIM21)//check source

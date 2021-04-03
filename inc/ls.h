@@ -75,13 +75,14 @@ void Error_Handler(void);
 
 void ls_init(void);
 
-enum LED_State {LED_OFF = 0, LED_ON = 1, LED_BLINK = 2};
+enum LED_State {LED_OFF = 0, LED_ON = 1, LED_BLINK_1Hz, LED_BLINK_5Hz};
 
 void ls_led_on_all(void);
 void ls_led_off_all(void);
 void ls_led_on(short number);
 void ls_led_off(short number);
-//void ls_led_blink(short number);
+void ls_led_blink_1Hz(short number);
+void ls_led_blink_5Hz(short number);
 
 void ls_buzz(int frequency, short time);
 
