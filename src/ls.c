@@ -75,7 +75,7 @@ void Error_Handler(void)
 	for(;;);
 }
 
-enum LED_State lls_LED[8] = {0,0,0,0,0,0,0,0}; //0=off, 1=on, 2=blink
+enum LED_State lls_LED[8] = {0,0,0,0,0,0,0,0}; //LED_OFF = 0, LED_ON = 1, LED_BLINK_1Hz, LED_BLINK_5Hz
 
 void lls_init_port(void)
 {
@@ -340,3 +340,20 @@ void ls_buzz(int frequency, short time)
 	//TODO off buzzer DC
 }
 
+
+void ls_out1_on(void)
+{
+	HAL_GPIO_WritePin(OUT_1_Port, OUT_1_Pin,GPIO_PIN_SET);
+}
+void ls_out2_on(void)
+{
+	HAL_GPIO_WritePin(OUT_2_Port, OUT_2_Pin,GPIO_PIN_SET);
+}
+void ls_out1_off(void)
+{
+	HAL_GPIO_WritePin(OUT_1_Port, OUT_1_Pin,GPIO_PIN_RESET);
+}
+void ls_out2_off(void)
+{
+	HAL_GPIO_WritePin(OUT_2_Port, OUT_2_Pin,GPIO_PIN_RESET);
+}

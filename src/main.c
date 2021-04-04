@@ -128,7 +128,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *lls_tim)
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)//falling
 {
-//todo ringbuffer, debouncing
+//todo ringbuffer
 	if(HAL_GPIO_ReadPin(SW3_Port,SW3_Pin)==0) //interrup SW3
 	{
 		if(lls_debouncing_ch3 == 0)
@@ -136,6 +136,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)//falling
 			lls_debouncing_ch3 = 4;// debouncing 30/40ms
 
 			ls_led_off_all();
+			ls_out1_off();
+			ls_out2_off();
 		}
 	}
 	if(HAL_GPIO_ReadPin(SW2_Port,SW2_Pin)==0) //interrup SW2
@@ -145,6 +147,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)//falling
 			lls_debouncing_ch2 = 4;// debouncing 30/40ms
 
 			ls_led_on_all();
+			ls_out1_on();
+			ls_out2_on();
 		}
 	}
 	if(HAL_GPIO_ReadPin(SW1_Port,SW1_Pin)==0) //interrup SW1

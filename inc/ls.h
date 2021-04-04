@@ -86,13 +86,11 @@ void ls_led_blink_5Hz(short number);
 
 void ls_buzz(int frequency, short time);
 
-
+void ls_out1_on(void);
+void ls_out2_on(void);
+void ls_out1_off(void);
+void ls_out2_off(void);
 //void ls_out1_PWM(short wide);
 //void ls_out2_PWM(short wide);
-//void ls_out1_on(void);
-//void ls_out2_on(void);
-//void ls_out1_off(void);
-//void ls_out2_off(void);
-
 
 #endif /* LS_H_ */
